@@ -1,16 +1,13 @@
 package de.thm.ap.records
 
 
-import android.content.DialogInterface
+
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.util.SparseBooleanArray
 import android.view.*
 import android.widget.*
-import androidx.annotation.MenuRes
 import androidx.appcompat.app.AlertDialog
 import de.thm.ap.records.databinding.ActivityRecordsBinding
 import de.thm.ap.records.model.Record
@@ -82,7 +79,7 @@ class RecordsActivity : AppCompatActivity(){
                 return when (item?.itemId) {
                     R.id.action_delete -> {
                         AlertDialog.Builder(this@RecordsActivity).apply{
-                            setMessage("Sollen die Leistungen wircklich gelöschtwerden?")
+                            setMessage("Sollen die Leistungen wircklich gelöscht werden?")
                             setPositiveButton("löschen"){ _, _ ->
                                 checkedRecordsList.forEach{ RecordDAO.get(this@RecordsActivity).delete(it) }
                                 checkedRecordsList.forEach { adapter.remove(it) }
@@ -159,6 +156,10 @@ class RecordsActivity : AppCompatActivity(){
 
 
     fun onSave(view: android.view.View) {
+    }
+
+    fun updateListRecords(){
+
     }
 }
 
