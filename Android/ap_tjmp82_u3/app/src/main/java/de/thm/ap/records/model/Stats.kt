@@ -7,38 +7,55 @@ import de.thm.ap.records.RecordFormActivity
 
 class Stats(var recordsStat: List<Record>) {
 
-    var sumCrp = 0
-    var crpToEnd = 156
-    var sumHalfWeighted = 0
+    var sumCrp = setDateForSats()
+    var crpToEnd = 180 - setDateForSats()
+    var sumHalfWeighted = calculateSumHalfWeighted()
     var averageMark= 0
     var listSize = recordsStat.size
 
 
-    fun setDateForSats(){
+    fun setDateForSats(): Int {
+        var sum = 0
         for(item in recordsStat){
-            if(item.isHalfWeighted){
-                sumHalfWeighted++
-
-            }
-            sumCrp += item.crp
+            sum += item.crp
         }
-
+        return sum
     }
 
-    fun calculateAverageM() : Int {
+    fun calculateSumHalfWeighted(): Int {
         var sum = 0
-        var avg  = 0
+        for(item in recordsStat){
+            sum += if(item.isHalfWeighted) 1 else 0
+        }
+        return sum
+    }
+
+    fun calculateAverageM(): Int {
+        var sum = 0
+        var avg = 0
         var crp = 0
+//        recordsStat.let { it ->
+//            it.forEach { sum += if (it.isHalfWeighted) ((it.mark * it.crp) / 2 ) else (it.mark * it.crp)
+//                crp += if (it.isHalfWeighted) (it.crp / 2 ) else it.crp
+//            }
+//            avg = if (sum > 0) sum / crp else 0
+//        }
+//        return avg
         recordsStat.let { it ->
-            it.forEach { sum += if (it.isHalfWeighted) ((it.mark * it.crp) / 2 ) else (it.mark * it.crp)
-                crp += if (it.isHalfWeighted) (it.crp / 2 ) else it.crp
+            it.forEach {
+                if (it.mark != 0) {
+                    sum += if (it.isHalfWeighted) ((it.mark * it.crp) / 2) else (it.mark * it.crp)
+                    crp += if (it.isHalfWeighted) (it.crp / 2) else it.crp
+                }
             }
-            avg = if (sum > 0) sum / crp else 0
+            avg = if(sum > 0 ) sum / crp else 0
         }
         return avg
     }
+
     init {
         setDateForSats()
+        calculateSumHalfWeighted()
         averageMark = calculateAverageM()
     }
 

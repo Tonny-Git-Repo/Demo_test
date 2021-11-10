@@ -9,6 +9,9 @@ import de.thm.ap.records.model.Record
 import de.thm.ap.records.persistence.RecordDAO
 import android.R.layout.simple_dropdown_item_1line
 import android.R.layout.simple_spinner_dropdown_item
+import android.util.Log
+import android.widget.Toast
+import java.lang.Exception
 
 class RecordFormActivity : AppCompatActivity() {
 
@@ -59,13 +62,25 @@ class RecordFormActivity : AppCompatActivity() {
             ""
         }
 
+        try {
+            it.mark = if (binding.mark.text.toString().trim().isEmpty()) {
+                0
+            } else {
+                binding.mark.text.toString().trim().toInt()
+            }
 
-        it.crp = if (binding.crp.text.toString().trim().isEmpty()) {
-            binding.crp.error = getString(R.string.credit_point_not_empty)
+            it.crp = if (binding.crp.text.toString().trim().isEmpty() || binding.crp.text.toString().toInt() > 15) {
+                binding.crp.error = getString(R.string.credit_point_not_empty)
+                isValid = false
+                0
+            } else {
+                0
+            }
+
+        } catch (e: Exception) {
+            Log.e(RecordFormActivity::class.java.toString(), e.toString())
             isValid = false
-            0
-        } else {
-            0
+            Toast.makeText(this@RecordFormActivity, "Credit Point oder Note dürfen keine Buchstaben enthalten!", Toast.LENGTH_LONG).show()
         }
 
             record.id = if(intent.getSerializableExtra("idRecordToUpdate")!= null)
@@ -76,7 +91,7 @@ class RecordFormActivity : AppCompatActivity() {
                it.year = (binding.year.selectedItem.toString()).toInt()
                it.isSummerTerm = binding.isSummerTerm.isChecked
                it.isHalfWeighted = binding.isHalfWeighted.isChecked
-               it.mark = (binding.mark.text.toString()).toInt()
+              // it.mark = (binding.mark.text.toString()).toInt()
                it.crp = (binding.crp.text.toString()).toInt()
             if (it.id == null) {
                 RecordDAO.get(this).persist(it)

@@ -13,7 +13,7 @@
     <string name="save">SPEICHERN</string>
     <string name="module_num_not_empty">ModulNummer darf nicht leer sein!</string>
     <string name="modul_name_not_empty">Modulname darf nicht leer sein!</string>
-    <string name="credit_point_not_empty">Kreditpunkte durfen nicht leer sein!</string>
+    <string name="credit_point_not_empty">Kreditpunkte durfen nicht leer sein oder größer 15!</string>
     <string name="close">Schließen</string>
     <string name="email_senden">Senden</string>
     <string name="leistungen_senden">Leistungen als email senden</string>
