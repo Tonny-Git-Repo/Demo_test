@@ -14,11 +14,15 @@ import de.thm.ap.records.model.Record
 import de.thm.ap.records.model.Stats
 import de.thm.ap.records.persistence.RecordDAO
 import java.util.*
+import kotlin.collections.ArrayDeque
 import kotlin.collections.ArrayList
 
 class RecordsActivity : AppCompatActivity(){
 
     private lateinit var binding: ActivityRecordsBinding
+
+    private var records= listOf<Record>()
+    private lateinit var adapter : ArrayAdapter<Record>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,15 +31,17 @@ class RecordsActivity : AppCompatActivity(){
 
         binding.recordListView.emptyView = binding.recordListEmptyView
 
+        records = RecordDAO.get(this).findAll()
+        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_activated_1, records)
+        binding.recordListView.adapter = adapter
+
     }
 
     override fun onStart() {
         super.onStart()
 
-        var records = RecordDAO.get(this).findAll()
-
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_activated_1, records)
-        binding.recordListView.adapter = adapter
+        adapter.clear()
+        adapter.addAll(RecordDAO.get(this).findAll())
 
         binding.recordListView.setOnItemClickListener { parent: AdapterView<*>, view, position, id ->
             Intent(this, RecordFormActivity::class.java).also {
@@ -52,7 +58,7 @@ class RecordsActivity : AppCompatActivity(){
 
         binding.recordListView.setMultiChoiceModeListener(object : AbsListView.MultiChoiceModeListener {
 
-            val checkedRecordsList =ArrayList<Record>()
+            val checkedRecordsList = ArrayList<Record>()
 
             override fun onItemCheckedStateChanged( mode: ActionMode?, position: Int, id: Long, checked: Boolean) {
                 if(checked) {
@@ -82,9 +88,10 @@ class RecordsActivity : AppCompatActivity(){
                             setMessage("Sollen die Leistungen wircklich gelöscht werden?")
                             setPositiveButton("löschen"){ _, _ ->
                                 checkedRecordsList.forEach{ RecordDAO.get(this@RecordsActivity).delete(it) }
-                                checkedRecordsList.forEach { adapter.remove(it) }
+                               // checkedRecordsList.forEach { adapter.remove(it) }
+                                adapter.clear()
+                                adapter.addAll(RecordDAO.get(this@RecordsActivity).findAll())
                                 checkedRecordsList.clear()
-
                             }
                             setNegativeButton("cancel", null)
                             show()
@@ -126,6 +133,7 @@ class RecordsActivity : AppCompatActivity(){
         return true
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
         return when (item.itemId) {
@@ -158,8 +166,12 @@ class RecordsActivity : AppCompatActivity(){
     fun onSave(view: android.view.View) {
     }
 
-    fun updateListRecords(){
+    private fun updateListRecords(){
+        records = RecordDAO.get(this).findAll()
 
+        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_activated_1, records)
+        binding.recordListView.adapter = adapter
+        Toast.makeText(this, "UpdateListRecordsCalled", Toast.LENGTH_LONG).show()
     }
 }
 
