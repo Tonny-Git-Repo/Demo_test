@@ -10,6 +10,7 @@ data class Record(var moduleNum: String , var moduleName: String , var year: Int
     override fun toString(): String {
         super.toString()
 
-        return "$moduleName $moduleNum (${mark}% ${crp}crp)"
+        return "$moduleName $moduleNum (${ if ( mark > 0 ) mark else ""} ${ if ( mark > 0 ) "%" else ""} ${crp}crp)"
+
     }
 }

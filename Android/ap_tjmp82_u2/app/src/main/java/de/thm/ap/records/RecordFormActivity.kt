@@ -37,6 +37,22 @@ class RecordFormActivity : AppCompatActivity() {
         binding.year.adapter = ArrayAdapter(this, simple_spinner_dropdown_item, getYears())
 
 
+        if(intent.getSerializableExtra("idRecordToUpdate")!= null){
+            record.id = intent?.getSerializableExtra("idRecordToUpdate") as Int?
+            var record =  RecordDAO.get(this).findById(record.id!!)
+            binding.moduleNum.setText(record?.moduleNum)
+            binding.moduleName.setText(record?.moduleName)
+            binding.isHalfWeighted.isChecked = record?.isHalfWeighted == true
+            binding.isSummerTerm.isChecked = record?.isSummerTerm == true
+            if (record != null) {
+                binding.crp.setText(record.crp.toString())
+                binding.mark.setText(record.mark.toString())
+            }
+
+            //Update the text of the save Button to Update for records to update
+            binding.save.text = "Update"
+        }
+
     }
 
     fun onSave(view: View) {
@@ -67,10 +83,6 @@ class RecordFormActivity : AppCompatActivity() {
         } else {
             0
         }
-
-            record.id = if(intent.getSerializableExtra("idRecordToUpdate")!= null)
-            {(intent.getSerializableExtra("idRecordToUpdate")).toString().toInt()} else {null}
-
 
        if (isValid) {
                it.year = (binding.year.selectedItem.toString()).toInt()

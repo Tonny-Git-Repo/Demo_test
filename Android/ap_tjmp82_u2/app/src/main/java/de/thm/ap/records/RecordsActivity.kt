@@ -22,6 +22,8 @@ import kotlin.collections.ArrayList
 class RecordsActivity : AppCompatActivity(){
 
     private lateinit var binding: ActivityRecordsBinding
+    private var records= listOf<Record>()
+    private lateinit var adapter : ArrayAdapter<Record>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +37,13 @@ class RecordsActivity : AppCompatActivity(){
     override fun onStart() {
         super.onStart()
 
-        var records = RecordDAO.get(this).findAll()
+        records = RecordDAO.get(this).findAll()
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_activated_1, records)
+        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_activated_1, records)
+
         binding.recordListView.adapter = adapter
+
+
 
         binding.recordListView.setOnItemClickListener { parent: AdapterView<*>, view, position, id ->
             Intent(this, RecordFormActivity::class.java).also {
@@ -85,7 +90,8 @@ class RecordsActivity : AppCompatActivity(){
                             setMessage("Sollen die Leistungen wircklich gelöschtwerden?")
                             setPositiveButton("löschen"){ _, _ ->
                                 checkedRecordsList.forEach{ RecordDAO.get(this@RecordsActivity).delete(it) }
-                                checkedRecordsList.forEach { adapter.remove(it) }
+                                adapter.clear()
+                                adapter.addAll(RecordDAO.get(this@RecordsActivity).findAll())
                                 checkedRecordsList.clear()
 
                             }
